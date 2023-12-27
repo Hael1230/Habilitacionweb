@@ -111,5 +111,31 @@ public class JugadorController {
 	     return ResponseEntity.ok(habilidades);
 	 }
 
+     @PostMapping("/{nuuid}/habilidades/{nuuid}")
+	 public ResponseEntity<String> agregarHabilidadAJugador(
+	         @PathVariable("nuuid") String jugadorUuid,
+	         @PathVariable("nuuid") String habilidadUuid) {
+
+	     Jugador jugador = jugadorRepository.findByUuid(jugadorUuid);
+	     Habilidad habilidad = habilidadRepository.findByUuid(habilidadUuid);
+
+	     if (jugador == null || habilidad == null) {
+	         return ResponseEntity.notFound().build();
+	     }
+
+	     List<Habilidad> habilidadesJugador = jugador.getHabilidades();
+
+	     boolean yaAsociado = HabilidadesJugador.contains(habilidad);
+
+	     if (yaAsociado) {
+	         return ResponseEntity.badRequest().body("La habilidad ya fue registrada al jugador");
+	     }
+
+	     habilidadesJugadordor.add(habilidad);
+	     jugadorRepository.save(jugador);
+
+	     return ResponseEntity.ok().build();
+	 }
+
     
 }
