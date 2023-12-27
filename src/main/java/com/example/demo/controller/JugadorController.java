@@ -58,7 +58,7 @@ public class JugadorController {
 	}
 
     @PostMapping("/login")
-	public ResponseEntity<Map<String, String>> obtenerUUIDPorEmail(@RequestParam String email) {
+	public ResponseEntity<Map<String, String>> obtenerNUUIDPorEmail(@RequestParam String email) {
 	    Jugador jugador = jugadorRepository.findByEmail(email);
 
 	    if (jugador == null) {
@@ -66,14 +66,14 @@ public class JugadorController {
 	    }
 
 	    Map<String, String> response = new HashMap<>();
-	    response.put("uuid", jugador.getUuid());
+	    response.put("nuuid", jugador.getNuuid());
 
 	    return ResponseEntity.ok(response);
 	}
 
     @GetMapping("/{clase}")
-	public ResponseEntity<List<Jugador>> listarJugadorPorClase(@PathVariable("clase") String claseUuid) {
-	    Clase clase = claserepository.findByUuid(claseUuid);
+	public ResponseEntity<List<Jugador>> listarJugadorPorClase(@PathVariable("clase") String claseNuuid) {
+	    Clase clase = claserepository.findByClase(claseNuuid);
 
 	    if (clase == null) {
 	        return ResponseEntity.notFound().build();
@@ -90,7 +90,7 @@ public class JugadorController {
 
     @PostMapping
     public ResponseEntity<Jugador> registrarJugador(@RequestBody Jugador nuevoJugador) {
-        if (nuevoJugador.getUuid() != null && jugadorRepository.findByUuid(nuevoJugador.getUuid()) != null) {
+        if (nuevoJugador.getNuuid() != null && jugadorRepository.findByNuuid(nuevoJugador.getNuuid()) != null) {
             return ResponseEntity.badRequest().body(null); 
         }
 
@@ -100,7 +100,7 @@ public class JugadorController {
 
     @GetMapping("/{nuuid}/habilidades")
 	 public ResponseEntity<List<Jugador>> listarHabilidadesDeJugador(@PathVariable("nuuid") String nuuid) {
-	     Jugador jugador = jugadorRepository.findByUuid(nuuid);
+	     Jugador jugador = jugadorRepository.findByNuuid(nuuid);
 
 	     if (jugador == null) {
 	         return ResponseEntity.notFound().build();
@@ -113,11 +113,11 @@ public class JugadorController {
 
      @PostMapping("/{nuuid}/habilidades/{nuuid}")
 	 public ResponseEntity<String> agregarHabilidadAJugador(
-	         @PathVariable("nuuid") String jugadorUuid,
-	         @PathVariable("nuuid") String habilidadUuid) {
+	         @PathVariable("nuuid") String jugadorNuuid,
+	         @PathVariable("nuuid") String habilidadNuuid) {
 
-	     Jugador jugador = jugadorRepository.findByUuid(jugadorUuid);
-	     Habilidad habilidad = habilidadRepository.findByUuid(habilidadUuid);
+	     Jugador jugador = jugadorRepository.findByNuuid(jugadorNuuid);
+	     Habilidad habilidad = habilidadRepository.findByNuuid(habilidadNuuid);
 
 	     if (jugador == null || habilidad == null) {
 	         return ResponseEntity.notFound().build();
@@ -136,6 +136,29 @@ public class JugadorController {
 
 	     return ResponseEntity.ok().build();
 	 }
+     
+     @PutMapping("/{nuuid}")
+     public ResponseEntity<Jugador> actualizarJugadorPorNuuid(@PathVariable String nuuid, @RequestBody Jugador jugadorActualizado) {
+         Optional<Jugador> optionalJugador = jugadorRepository.findByNuuid(nuuid);
+ 
+         if (optionalJugador.isPresent()) {
+             Jugador jugador = optionalJugador.get();
+ 
+             jugador.setNombre(jugadorActualizado.getNombre());
+             jugador.setFechaNacimiento(jugadorActualizado.getFechaNacimiento());
+             jugador.setDescripcion(jugadorActualizado.getDescripcion());
+             jugador.setEmail(jugadorActualizado.getEmail());
+             jugador.setClase(jugadorActualizado.getClase());
+             jugador.setGenero(jugadorActualizado.getGenero());
+             jugador.setRango(jugadorActualizado.getRango());
+             jugador.setNuuid(jugadorActualizado.getNuuid());
+ 
+             Jugador jugadorGuardado = jugadorRepository.save(jugador);
+ 
+             return ResponseEntity.ok(jugadorGuardado);
+         } else {
+             return ResponseEntity.notFound().build();
+         }
+     }
 
-    
 }
