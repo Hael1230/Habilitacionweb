@@ -1,0 +1,75 @@
+package main.java.com.example.demo.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+
+import com.example.demo.entities.Entrenador;
+import com.example.demo.entities.Pokemon;
+import com.example.demo.repository.RepoEntrenador;
+import com.example.demo.repository.RepoPokemon;
+
+import main.java.com.example.demo.repository.HabilidadRepository;
+import main.java.com.example.demo.repository.JugadorRepository;
+
+@RestController
+@RequestMapping("/jugadores")
+
+public class JugadorController {
+
+    @Autowired
+	JugadorRepository jugadorRepository;
+	@Autowired
+	HabilidadRepository habilidadRepository;
+
+    @PostMapping("/crear")
+	public ResponseEntity<Jugador> crearJugador(@RequestBody Jugador nuevoJugador) {
+	    Jugador jugadorExistente = jugadorRepository.findByEmail(nuevoJugador.getEmail());
+
+	    if (jugadorExistente != null) {
+	        return ResponseEntity.badRequest().body(null);
+	    }
+
+	    Jugador jugadorCreado = jugadorRepository.save(nuevoJugador);
+	    return ResponseEntity.status(HttpStatus.CREATED).body(jugadorCreado);
+	}
+
+    @GetMapping("/lista")
+	public ResponseEntity<List<Jugador>> listarJugadores() {
+	    List<Jugador> jugadores = jugadorRepository.findAll();
+
+	    if (entrenadores.isEmpty()) {
+	        return ResponseEntity.noContent().build();
+	    }
+
+	    return ResponseEntity.ok(jugadores);
+	}
+
+    @PostMapping("/login")
+	public ResponseEntity<Map<String, String>> obtenerUUIDPorEmail(@RequestParam String email) {
+	    Jugador jugador = jugadorRepository.findByEmail(email);
+
+	    if (jugador == null) {
+	        return ResponseEntity.notFound().build();
+	    }
+
+	    Map<String, String> response = new HashMap<>();
+	    response.put("uuid", jugador.getUuid());
+
+	    return ResponseEntity.ok(response);
+	}
+    
+}

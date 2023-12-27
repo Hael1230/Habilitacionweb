@@ -31,6 +31,7 @@ public class Jugador implements Serializable {
 	private String nombre;
     private Date fecha_nacimiento;
 	private String descripcion;
+    private String email;
     @ManyToOne
 	@JoinColumn(name="clase_id")
 	private Clase clase;
