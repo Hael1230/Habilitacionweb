@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.entities.*;
 import com.example.demo.repository.*;
 
+import main.java.com.example.demo.entities.Jugador;
 import main.java.com.example.demo.repository.HabilidadRepository;
 import main.java.com.example.demo.repository.JugadorRepository;
 
@@ -96,5 +97,19 @@ public class JugadorController {
         Jugador jugadorGuardado = jugadorRepository.save(nuevoJugador);
         return ResponseEntity.ok(jugadorGuardado);
     }
+
+    @GetMapping("/{nuuid}/habilidades")
+	 public ResponseEntity<List<Jugador>> listarHabilidadesDeJugador(@PathVariable("nuuid") String nuuid) {
+	     Jugador jugador = jugadorRepository.findByUuid(nuuid);
+
+	     if (jugador == null) {
+	         return ResponseEntity.notFound().build();
+	     }
+
+	     List<Habilidad> habilidades = jugador.getHabilidades();
+
+	     return ResponseEntity.ok(habilidades);
+	 }
+
     
 }
