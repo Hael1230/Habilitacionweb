@@ -17,10 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.example.demo.entities.Entrenador;
-import com.example.demo.entities.Pokemon;
-import com.example.demo.repository.RepoEntrenador;
-import com.example.demo.repository.RepoPokemon;
+import com.example.demo.entities.*;
+import com.example.demo.repository.*;
 
 import main.java.com.example.demo.repository.HabilidadRepository;
 import main.java.com.example.demo.repository.JugadorRepository;
@@ -70,6 +68,23 @@ public class JugadorController {
 	    response.put("uuid", jugador.getUuid());
 
 	    return ResponseEntity.ok(response);
+	}
+
+    @GetMapping("/{clase}")
+	public ResponseEntity<List<Jugador>> listarJugadorPorClase(@PathVariable("clase") String claseUuid) {
+	    Clase clase = claserepository.findByUuid(claseUuid);
+
+	    if (clase == null) {
+	        return ResponseEntity.notFound().build();
+	    }
+
+	    List<Jugador> pjugadores = clase.getJugadores();
+
+	    if (pokemones.isEmpty()) {
+	        return ResponseEntity.notFound().build();
+	    }
+
+	    return ResponseEntity.ok(jugadores);
 	}
     
 }
