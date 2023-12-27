@@ -86,5 +86,15 @@ public class JugadorController {
 
 	    return ResponseEntity.ok(jugadores);
 	}
+
+    @PostMapping
+    public ResponseEntity<Jugador> registrarJugador(@RequestBody Jugador nuevoJugador) {
+        if (nuevoJugador.getUuid() != null && jugadorRepository.findByUuid(nuevoJugador.getUuid()) != null) {
+            return ResponseEntity.badRequest().body(null); 
+        }
+
+        Jugador jugadorGuardado = jugadorRepository.save(nuevoJugador);
+        return ResponseEntity.ok(jugadorGuardado);
+    }
     
 }
