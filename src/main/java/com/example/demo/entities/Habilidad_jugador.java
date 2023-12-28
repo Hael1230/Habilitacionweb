@@ -19,10 +19,10 @@ public class Habilidad_jugador {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-	@ManyToOne
+	@ManyToMany
 	@JoinColumn(name="habilidad_id")
 	private Habilidad habilidades;
-	@ManyToOne
+	@ManyToMany
 	@JoinColumn(name="jugador_id")
 	private Jugador jugador;
 }

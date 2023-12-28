@@ -50,7 +50,7 @@ public class JugadorController {
 	public ResponseEntity<List<Jugador>> listarJugadores() {
 	    List<Jugador> jugadores = jugadorRepository.findAll();
 
-	    if (entrenadores.isEmpty()) {
+	    if (jugadores.isEmpty()) {
 	        return ResponseEntity.noContent().build();
 	    }
 
